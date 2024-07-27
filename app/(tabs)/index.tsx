@@ -1,21 +1,18 @@
-import {
-  ActivityIndicator,
-  Image,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from "react-native";
-
-import ParallaxScrollView from "@/components/ParallaxScrollView";
-import { ThemedView } from "@/components/ThemedView";
-
-import { convertMarketCapsToTCandleData } from "@/utils/currency";
-import { useEffect, useState } from "react";
-import { CandlestickChart, TCandle } from "react-native-wagmi-charts";
+import React, { useEffect, useState } from "react";
+import { View, ActivityIndicator, TouchableOpacity, StyleSheet } from "react-native";
 import { useQuery } from "react-query";
+import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
+import { convertMarketCapsToTCandleData } from "@/utils/currency";
+import { CandlestickChart, TCandle } from "react-native-wagmi-charts";
 
-export default function HomeScreen() {
+const TIME_INTERVALS = {
+  "24_hours": "24H",
+  "7_days": "1W",
+  "30_days": "1M",
+};
+
+const HomeScreen = () => {
   const [time, setTime] = useState("24_hours");
   const { data, isLoading, error } = useQuery<CoinGeckoType, Error>(
     ["btc", time],
@@ -36,35 +33,25 @@ export default function HomeScreen() {
 
   return (
     <ThemedView style={{ paddingTop: 60, flex: 1 }}>
-      <View
-        style={{
-          paddingHorizontal: 16,
-          minHeight: 200,
-        }}
-      >
+      <View style={styles.chartContainer}>
         {error ? (
-          <View
-            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
-          >
+          <View style={styles.centeredContainer}>
             <ThemedText>Terjadi Kesalahan pada koneksi</ThemedText>
           </View>
         ) : isLoading ? (
-          <View
-            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
-          >
+          <View style={styles.centeredContainer}>
             <ActivityIndicator />
           </View>
         ) : (
           <View>
-            <ThemedText style={{fontSize: 12}}>Bitcoin Price</ThemedText>
-            <View style={{ marginBottom: 10, flexDirection: 'row', alignItems: 'center' }}>
-              <ThemedText style={{ fontSize: 18, fontWeight: "bold" }}>
+            <ThemedText style={styles.smallText}>Bitcoin Price</ThemedText>
+            <View style={styles.priceContainer}>
+              <ThemedText style={styles.boldText}>
                 Rp 1.106.550.546
               </ThemedText>
-              <ThemedText style={{ fontSize: 12, fontWeight: "bold", color: 'green', marginLeft:10 }}>
+              <ThemedText style={styles.percentageText}>
                 1.34%
               </ThemedText>
-              
             </View>
             <CandlestickChart.Provider data={candleData}>
               <CandlestickChart height={200}>
@@ -74,54 +61,65 @@ export default function HomeScreen() {
           </View>
         )}
       </View>
-      <View
-        style={{ flexDirection: "row", marginTop: 20, marginHorizontal: 16 }}
-      >
-        <TouchableOpacity
-          style={[styles.time, time === "24_hours" && styles.timeActive]}
-          onPress={() => setTime("24_hours")}
-        >
-          <ThemedText
+      <View style={styles.timeSelectorContainer}>
+        {Object.entries(TIME_INTERVALS).map(([key, label]) => (
+          <TouchableOpacity
+            key={key}
             style={[
-              styles.timeText,
-              time === "24_hours" && styles.timeActiveText,
+              styles.time,
+              time === key && styles.timeActive
             ]}
+            onPress={() => setTime(key)}
           >
-            24H
-          </ThemedText>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.time, time === "7_days" && styles.timeActive]}
-          onPress={() => setTime("7_days")}
-        >
-          <ThemedText
-            style={[
-              styles.timeText,
-              time === "7_days" && styles.timeActiveText,
-            ]}
-          >
-            1W
-          </ThemedText>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.time, time === "30_days" && styles.timeActive]}
-          onPress={() => setTime("30_days")}
-        >
-          <ThemedText
-            style={[
-              styles.timeText,
-              time === "30_days" && styles.timeActiveText,
-            ]}
-          >
-            1M
-          </ThemedText>
-        </TouchableOpacity>
+            <ThemedText
+              style={[
+                styles.timeText,
+                time === key && styles.timeActiveText,
+              ]}
+            >
+              {label}
+            </ThemedText>
+          </TouchableOpacity>
+        ))}
       </View>
     </ThemedView>
   );
-}
+};
+
 
 const styles = StyleSheet.create({
+  chartContainer: {
+    paddingHorizontal: 16,
+    minHeight: 200,
+  },
+  centeredContainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  smallText: {
+    fontSize: 12,
+  },
+  priceContainer: {
+    marginBottom: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  boldText: {
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  percentageText: {
+    fontSize: 12,
+    fontWeight: "bold",
+    color: 'green',
+    marginLeft: 10,
+  },
+  timeSelectorContainer: {
+    flexDirection: "row",
+    marginTop: 20,
+    marginHorizontal: 16,
+  },
   timeText: {
     fontSize: 12,
   },
@@ -137,3 +135,5 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
 });
+
+export default HomeScreen;
