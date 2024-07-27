@@ -37,7 +37,6 @@
     "react-native-svg": "15.2.0",
     "react-native-wagmi-charts": "^2.5.2",
     "react-native-web": "~0.19.10",
-    "react-query": "^3.39.3",
     "zustand": "^4.5.4"
   },
   "devDependencies": {
