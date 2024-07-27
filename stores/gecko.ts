@@ -1,11 +1,17 @@
-import { convertMarketCapsToTCandleData } from '@/utils/currency';
-import { TCandle } from 'react-native-wagmi-charts';
-import { create } from 'zustand';
+import { convertMarketCapsToTCandleData } from "@/utils/currency";
+import { TCandle } from "react-native-wagmi-charts";
+import { create } from "zustand";
+
+export const TIME_INTERVALS = {
+  "24_hours": "24H",
+  "7_days": "1W",
+  "30_days": "1M",
+  "365_days": "1Y",
+  max: "ALL",
+};
 
 type StoreState = {
   data: { [key: string]: TCandle[] };
-  isLoading: boolean;
-  error: string | null;
   time: string;
   setTime: (time: string) => void;
   fetchData: () => void;
@@ -19,11 +25,11 @@ const fetchCandleData = async (time: string): Promise<TCandle[]> => {
   return convertMarketCapsToTCandleData(data?.ohlc);
 };
 
-const useCoinGeckoStore = create<StoreState>((set, get) => ({
+export const useCoinGeckoStore = create<StoreState>((set, get) => ({
   data: {},
   isLoading: false,
   error: null,
-  time: '24_hours',
+  time: "24_hours",
   setTime: (time: string) => {
     set({ time });
     if (!get().data[time]) {
@@ -32,17 +38,30 @@ const useCoinGeckoStore = create<StoreState>((set, get) => ({
   },
   fetchData: async () => {
     const { time } = get();
-    set({ isLoading: true, error: null });
+    useCoinGeckoStoreLoading.setState({ isLoading: true, error: null });
     try {
       const candleData = await fetchCandleData(time);
       set((state) => ({
         data: { ...state.data, [time]: candleData },
-        isLoading: false,
       }));
+      useCoinGeckoStoreLoading.setState({ isLoading: false });
     } catch (error) {
-      set({ error: (error as Error).message, isLoading: false });
+      useCoinGeckoStoreLoading.setState({
+        error: (error as Error).message,
+        isLoading: false,
+      });
     }
   },
+}));
+
+type StoreLoadingState = {
+  isLoading: boolean;
+  error: string | null;
+};
+
+export const useCoinGeckoStoreLoading = create<StoreLoadingState>(() => ({
+  isLoading: false,
+  error: null,
 }));
 
 export default useCoinGeckoStore;
