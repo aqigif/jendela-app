@@ -1,70 +1,139 @@
-import { Image, StyleSheet, Platform } from 'react-native';
+import {
+  ActivityIndicator,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import ParallaxScrollView from "@/components/ParallaxScrollView";
+import { ThemedView } from "@/components/ThemedView";
+
+import { convertMarketCapsToTCandleData } from "@/utils/currency";
+import { useEffect, useState } from "react";
+import { CandlestickChart, TCandle } from "react-native-wagmi-charts";
+import { useQuery } from "react-query";
+import { ThemedText } from "@/components/ThemedText";
 
 export default function HomeScreen() {
+  const [time, setTime] = useState("24_hours");
+  const { data, isLoading, error } = useQuery<CoinGeckoType, Error>(
+    ["btc", time],
+    async () => {
+      const response = await fetch(
+        `https://www.coingecko.com/ohlc/36927/series/btc/${time}.json`
+      );
+      return response.json();
+    }
+  );
+  const [candleData, setCandleData] = useState<TCandle[]>([]);
+
+  useEffect(() => {
+    if (data) {
+      setCandleData(convertMarketCapsToTCandleData(data?.ohlc));
+    }
+  }, [data]);
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({ ios: 'cmd + d', android: 'cmd + m' })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+    <ThemedView style={{ paddingTop: 60, flex: 1 }}>
+      <View
+        style={{
+          paddingHorizontal: 16,
+          minHeight: 200,
+        }}
+      >
+        {error ? (
+          <View
+            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+          >
+            <ThemedText>Terjadi Kesalahan pada koneksi</ThemedText>
+          </View>
+        ) : isLoading ? (
+          <View
+            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+          >
+            <ActivityIndicator />
+          </View>
+        ) : (
+          <View>
+            <ThemedText style={{fontSize: 12}}>Bitcoin Price</ThemedText>
+            <View style={{ marginBottom: 10, flexDirection: 'row', alignItems: 'center' }}>
+              <ThemedText style={{ fontSize: 18, fontWeight: "bold" }}>
+                Rp 1.106.550.546
+              </ThemedText>
+              <ThemedText style={{ fontSize: 12, fontWeight: "bold", color: 'green', marginLeft:10 }}>
+                1.34%
+              </ThemedText>
+              
+            </View>
+            <CandlestickChart.Provider data={candleData}>
+              <CandlestickChart height={200}>
+                <CandlestickChart.Candles />
+              </CandlestickChart>
+            </CandlestickChart.Provider>
+          </View>
+        )}
+      </View>
+      <View
+        style={{ flexDirection: "row", marginTop: 20, marginHorizontal: 16 }}
+      >
+        <TouchableOpacity
+          style={[styles.time, time === "24_hours" && styles.timeActive]}
+          onPress={() => setTime("24_hours")}
+        >
+          <ThemedText
+            style={[
+              styles.timeText,
+              time === "24_hours" && styles.timeActiveText,
+            ]}
+          >
+            24H
+          </ThemedText>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.time, time === "7_days" && styles.timeActive]}
+          onPress={() => setTime("7_days")}
+        >
+          <ThemedText
+            style={[
+              styles.timeText,
+              time === "7_days" && styles.timeActiveText,
+            ]}
+          >
+            1W
+          </ThemedText>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.time, time === "30_days" && styles.timeActive]}
+          onPress={() => setTime("30_days")}
+        >
+          <ThemedText
+            style={[
+              styles.timeText,
+              time === "30_days" && styles.timeActiveText,
+            ]}
+          >
+            1M
+          </ThemedText>
+        </TouchableOpacity>
+      </View>
+    </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+  timeText: {
+    fontSize: 12,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  timeActiveText: {
+    color: "black",
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  time: {
+    borderRadius: 4,
+    paddingHorizontal: 10,
+    marginRight: 15,
+  },
+  timeActive: {
+    backgroundColor: "white",
   },
 });
