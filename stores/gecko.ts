@@ -12,9 +12,17 @@ export const TIME_INTERVALS = {
 
 type StoreState = {
   data: { [key: string]: TCandle[] };
+  fetchData: () => void;
+};
+
+type StoreTimeState = {
   time: string;
   setTime: (time: string) => void;
-  fetchData: () => void;
+};
+
+type StoreLoadingState = {
+  isLoading: boolean;
+  error: string | null;
 };
 
 const fetchCandleData = async (time: string): Promise<TCandle[]> => {
@@ -29,15 +37,8 @@ export const useCoinGeckoStore = create<StoreState>((set, get) => ({
   data: {},
   isLoading: false,
   error: null,
-  time: "24_hours",
-  setTime: (time: string) => {
-    set({ time });
-    if (!get().data[time]) {
-      get().fetchData();
-    }
-  },
   fetchData: async () => {
-    const { time } = get();
+    const { time } = useCoinGeckoStoreTime.getState();
     useCoinGeckoStoreLoading.setState({ isLoading: true, error: null });
     try {
       const candleData = await fetchCandleData(time);
@@ -54,10 +55,15 @@ export const useCoinGeckoStore = create<StoreState>((set, get) => ({
   },
 }));
 
-type StoreLoadingState = {
-  isLoading: boolean;
-  error: string | null;
-};
+export const useCoinGeckoStoreTime = create<StoreTimeState>((set) => ({
+  time: "24_hours",
+  setTime: (time: string) => {
+    set({ time });
+    if (!useCoinGeckoStore.getState().data[time]) {
+      useCoinGeckoStore.getState().fetchData();
+    }
+  },
+}));
 
 export const useCoinGeckoStoreLoading = create<StoreLoadingState>(() => ({
   isLoading: false,

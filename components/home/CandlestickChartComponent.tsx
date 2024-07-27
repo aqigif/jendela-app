@@ -1,12 +1,8 @@
-import React from "react";
-import {
-  ActivityIndicator,
-  StyleSheet,
-  View
-} from "react-native";
+import React, { useMemo } from "react";
+import { ActivityIndicator, StyleSheet, View } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { useCoinGeckoStore } from "@/stores";
-import { TIME_INTERVALS, useCoinGeckoStoreLoading } from "@/stores/gecko";
+import { TIME_INTERVALS, useCoinGeckoStoreLoading, useCoinGeckoStoreTime } from "@/stores/gecko";
 import { CandlestickChart } from "react-native-wagmi-charts";
 
 const CandlestickChartComponent = () => {
@@ -41,8 +37,7 @@ const CandlestickChartComponent = () => {
 };
 
 const CandlestickChartComponentAtom = ({ index }: { index: string }) => {
-  const { data, time } = useCoinGeckoStore((state) => ({
-    data: state.data,
+  const { time } = useCoinGeckoStoreTime((state) => ({
     time: state.time,
   }));
   return (
@@ -52,14 +47,27 @@ const CandlestickChartComponentAtom = ({ index }: { index: string }) => {
         { opacity: time === index ? 1 : 0, zIndex: time === index ? 1 : 0 },
       ]}
     >
-      <CandlestickChart.Provider data={data[index] || []}>
+      <CandlestickChartComponentSuperAtom index={index} />
+    </View>
+  );
+};
+
+const CandlestickChartComponentSuperAtom = React.memo(
+  ({ index }: { index: string }) => {
+    const { data } = useCoinGeckoStore((state) => ({
+      data: state.data,
+    }));
+
+    const dataChart = useMemo(() => data[index] || [], [data, index]);
+    return (
+      <CandlestickChart.Provider data={dataChart}>
         <CandlestickChart height={200}>
           <CandlestickChart.Candles />
         </CandlestickChart>
       </CandlestickChart.Provider>
-    </View>
-  );
-};
+    );
+  }
+);
 
 const styles = StyleSheet.create({
   chartContainer: {

@@ -1,15 +1,14 @@
+import { ThemedText } from "@/components/ThemedText";
+import { TIME_INTERVALS, useCoinGeckoStoreTime } from "@/stores/gecko";
 import React from "react";
 import {
   StyleSheet,
   TouchableOpacity,
   View
 } from "react-native";
-import { ThemedText } from "@/components/ThemedText";
-import { useCoinGeckoStore } from "@/stores";
-import { TIME_INTERVALS } from "@/stores/gecko";
 
 const TimeSelector = () => {
-  const { time, setTime } = useCoinGeckoStore((state) => ({
+  const { time, setTime } = useCoinGeckoStoreTime((state) => ({
     time: state.time,
     setTime: state.setTime,
   }));
