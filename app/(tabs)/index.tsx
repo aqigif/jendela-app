@@ -10,11 +10,14 @@ import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
 import { convertMarketCapsToTCandleData } from "@/utils/currency";
 import { CandlestickChart, TCandle } from "react-native-wagmi-charts";
+import { StatusBar } from "expo-status-bar";
 
 const TIME_INTERVALS = {
   "24_hours": "24H",
   "7_days": "1W",
   "30_days": "1M",
+  "365_days": "1Y",
+  "max": "ALL",
 };
 
 const HomeScreen = () => {
@@ -23,7 +26,7 @@ const HomeScreen = () => {
     ["btc", time],
     async () => {
       const response = await fetch(
-        `https://www.coingecko.com/ohlc/36927/series/btc/${time}.json`
+        `https://www.coingecko.com/ohlc/1/series/usd/${time}.json`
       );
       return response.json();
     }
@@ -38,6 +41,7 @@ const HomeScreen = () => {
 
   return (
     <ThemedView style={{ paddingTop: 60, flex: 1}}>
+      <StatusBar style="light" />
       <View style={styles.titleContainer}>
       <ThemedText style={styles.smallText}>Bitcoin Price</ThemedText>
       <View style={styles.priceContainer}>
