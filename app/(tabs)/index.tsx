@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { View, ActivityIndicator, TouchableOpacity, StyleSheet } from "react-native";
+import {
+  View,
+  ActivityIndicator,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
 import { useQuery } from "react-query";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
@@ -32,7 +37,14 @@ const HomeScreen = () => {
   }, [data]);
 
   return (
-    <ThemedView style={{ paddingTop: 60, flex: 1 }}>
+    <ThemedView style={{ paddingTop: 60, flex: 1}}>
+      <View style={styles.titleContainer}>
+      <ThemedText style={styles.smallText}>Bitcoin Price</ThemedText>
+      <View style={styles.priceContainer}>
+        <ThemedText style={styles.boldText}>Rp 1.106.550.546</ThemedText>
+        <ThemedText style={styles.percentageText}>1.34%</ThemedText>
+      </View>
+      </View>
       <View style={styles.chartContainer}>
         {error ? (
           <View style={styles.centeredContainer}>
@@ -43,39 +55,22 @@ const HomeScreen = () => {
             <ActivityIndicator />
           </View>
         ) : (
-          <View>
-            <ThemedText style={styles.smallText}>Bitcoin Price</ThemedText>
-            <View style={styles.priceContainer}>
-              <ThemedText style={styles.boldText}>
-                Rp 1.106.550.546
-              </ThemedText>
-              <ThemedText style={styles.percentageText}>
-                1.34%
-              </ThemedText>
-            </View>
-            <CandlestickChart.Provider data={candleData}>
-              <CandlestickChart height={200}>
-                <CandlestickChart.Candles />
-              </CandlestickChart>
-            </CandlestickChart.Provider>
-          </View>
+          <CandlestickChart.Provider data={candleData}>
+            <CandlestickChart height={200}>
+              <CandlestickChart.Candles />
+            </CandlestickChart>
+          </CandlestickChart.Provider>
         )}
       </View>
       <View style={styles.timeSelectorContainer}>
         {Object.entries(TIME_INTERVALS).map(([key, label]) => (
           <TouchableOpacity
             key={key}
-            style={[
-              styles.time,
-              time === key && styles.timeActive
-            ]}
+            style={[styles.time, time === key && styles.timeActive]}
             onPress={() => setTime(key)}
           >
             <ThemedText
-              style={[
-                styles.timeText,
-                time === key && styles.timeActiveText,
-              ]}
+              style={[styles.timeText, time === key && styles.timeActiveText]}
             >
               {label}
             </ThemedText>
@@ -86,8 +81,10 @@ const HomeScreen = () => {
   );
 };
 
-
 const styles = StyleSheet.create({
+  titleContainer: {
+    paddingHorizontal: 16,
+  },
   chartContainer: {
     paddingHorizontal: 16,
     minHeight: 200,
@@ -102,8 +99,8 @@ const styles = StyleSheet.create({
   },
   priceContainer: {
     marginBottom: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   boldText: {
     fontSize: 18,
@@ -112,7 +109,7 @@ const styles = StyleSheet.create({
   percentageText: {
     fontSize: 12,
     fontWeight: "bold",
-    color: 'green',
+    color: "green",
     marginLeft: 10,
   },
   timeSelectorContainer: {
