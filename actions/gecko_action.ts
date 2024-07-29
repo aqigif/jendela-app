@@ -12,5 +12,5 @@ class CoinGecko {
   };
 }
 
-const coinGeckoStore = new CoinGecko();
-export default coinGeckoStore;
+const coinGeckoAction = new CoinGecko();
+export default coinGeckoAction;

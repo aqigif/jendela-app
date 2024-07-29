@@ -7,8 +7,9 @@ import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
 import { StatusBar } from "expo-status-bar";
 import { useCoinGeckoStore } from "@/stores";
-import CandlestickChartComponent from "@/components/home/CandlestickChartComponent";
+import CandlestickChart from "@/components/home/CandlestickChart";
 import TimeSelector from "@/components/home/TimeSelector";
+import OrderBook from "@/components/home/OrderBook";
 
 const HomeScreen = () => {
   useEffect(() => {
@@ -25,8 +26,11 @@ const HomeScreen = () => {
           <ThemedText style={styles.percentageText}>1.34%</ThemedText>
         </View>
       </View>
-      <CandlestickChartComponent />
-      <TimeSelector />
+      <View style={styles.chartContent}>
+        <CandlestickChart />
+        <TimeSelector />
+      </View>
+      <OrderBook />
     </ThemedView>
   );
 };
@@ -53,6 +57,9 @@ const styles = StyleSheet.create({
     color: "green",
     marginLeft: 10,
   },
+  chartContent: {
+    marginBottom: 16
+  }
 });
 
 export default HomeScreen;

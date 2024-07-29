@@ -2,10 +2,10 @@ import React, { useMemo } from "react";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { useCoinGeckoStore, useCoinGeckoStoreLoading, useCoinGeckoStoreTime } from "@/stores";
-import { CandlestickChart } from "react-native-wagmi-charts";
+import { CandlestickChart as WagmiCandlestickChart } from "react-native-wagmi-charts";
 import { TIME_INTERVALS } from "@/constants/times";
 
-const CandlestickChartComponent = () => {
+const CandlestickChart = () => {
   const { isLoading, error } = useCoinGeckoStoreLoading((state) => ({
     isLoading: state.isLoading,
     error: state.error,
@@ -30,13 +30,13 @@ const CandlestickChartComponent = () => {
   return (
     <View style={styles.chartContainer}>
       {Object.entries(TIME_INTERVALS).map(([key]) => (
-        <CandlestickChartComponentAtom key={key} index={key} />
+        <CandlestickChartAtom key={key} index={key} />
       ))}
     </View>
   );
 };
 
-const CandlestickChartComponentAtom = ({ index }: { index: string }) => {
+const CandlestickChartAtom = ({ index }: { index: string }) => {
   const { time } = useCoinGeckoStoreTime((state) => ({
     time: state.time,
   }));
@@ -47,12 +47,12 @@ const CandlestickChartComponentAtom = ({ index }: { index: string }) => {
         { opacity: time === index ? 1 : 0, zIndex: time === index ? 1 : 0 },
       ]}
     >
-      <CandlestickChartComponentSuperAtom index={index} />
+      <CandlestickChartSuperAtom index={index} />
     </View>
   );
 };
 
-const CandlestickChartComponentSuperAtom = React.memo(
+const CandlestickChartSuperAtom = React.memo(
   ({ index }: { index: string }) => {
     const { data } = useCoinGeckoStore((state) => ({
       data: state.data,
@@ -60,11 +60,11 @@ const CandlestickChartComponentSuperAtom = React.memo(
 
     const dataChart = useMemo(() => data[index] || [], [data, index]);
     return (
-      <CandlestickChart.Provider data={dataChart}>
-        <CandlestickChart height={200}>
-          <CandlestickChart.Candles />
-        </CandlestickChart>
-      </CandlestickChart.Provider>
+      <WagmiCandlestickChart.Provider data={dataChart}>
+        <WagmiCandlestickChart height={200}>
+          <WagmiCandlestickChart.Candles />
+        </WagmiCandlestickChart>
+      </WagmiCandlestickChart.Provider>
     );
   }
 );
@@ -89,4 +89,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CandlestickChartComponent;
+export default CandlestickChart;
