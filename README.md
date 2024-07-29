@@ -27,7 +27,7 @@ You can start developing by editing the files inside the **app** directory. This
 
 ## Demo
 
-![Video Demo](./demo/demo.mov)
+https://github.com/user-attachments/assets/6241563c-dd47-4bbd-b7d5-cb15483fbe76
 
 ## Performance Analysis : React-Native-Wagmi-Chart
 
@@ -36,21 +36,22 @@ You can start developing by editing the files inside the **app** directory. This
    - the animation looks so nice from rn-wagmi-charts when we change the data 
    - but when switching larger data that already in cache, i got drop fps and frozen frame. :(
    
-   ![Video 1st Form](./demo/performance/1st.mp4)
+   https://github.com/user-attachments/assets/0f9a56bb-f2bc-4406-b474-a044a4799c59
 
-
-2. 2nd form
+3. 2nd form
    - i decide to remove react-query
    - install zustand
    - create two zustand store: 1 for handle data, 2 for handle loading and errors
    - define all charts of every time at once and using absolute position to manage hide and show
    
-   ![Video 1st Form](./demo/performance/2nd.mp4)
+   https://github.com/user-attachments/assets/cecb2ff9-dc1f-4ba7-967e-aa4b61bbdbae
 
-3. 3rd form
+
+4. 3rd form
   - more separate component by making CandlestickChartAtom and CandlestickChartSuperAtom
   - more separate zustand store into 3: 1 for handle data, 2 for handle loading and errors, 3 for handling time switching
   - goal : only once render .map and chart when time switching
+  - now when switching larger data that already in cache, it perform better
    
-  ![Video 1st Form](./demo/performance/3rd.mp4)
-  
+  https://github.com/user-attachments/assets/0459228c-f551-4b49-a63a-3aed3ccdd862
+
