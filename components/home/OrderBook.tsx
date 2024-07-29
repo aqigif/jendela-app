@@ -68,6 +68,7 @@ const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 16,
     flex: 1,
+    maxHeight: 400
   },
   headerText: {
     fontSize: 12,
