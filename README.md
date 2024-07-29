@@ -1,4 +1,4 @@
-# Welcome to your Expo app 👋
+# Welcome to Jendela App 👋
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
@@ -25,26 +25,32 @@ In the output, you'll find options to open the app in a
 
 You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
 
-## Get a fresh project
+## Demo
 
-When you're ready, run:
+![Video Demo](./demo/demo.mov)
 
-```bash
-npm run reset-project
-```
+## Performance Analysis : React-Native-Wagmi-Chart
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+1. 1st form
+   - using react-query, with normal code
+   - the animation looks so nice from rn-wagmi-charts when we change the data 
+   - but when switching larger data that already in cache, i got drop fps and frozen frame. :(
+   
+   ![Video 1st Form](./demo/performance/1st.mp4)
 
-## Learn more
 
-To learn more about developing your project with Expo, look at the following resources:
+2. 2nd form
+   - i decide to remove react-query
+   - install zustand
+   - create two zustand store: 1 for handle data, 2 for handle loading and errors
+   - define all charts of every time at once and using absolute position to manage hide and show
+   
+   ![Video 1st Form](./demo/performance/2nd.mp4)
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+3. 3rd form
+  - more separate component by making CandlestickChartAtom and CandlestickChartSuperAtom
+  - more separate zustand store into 3: 1 for handle data, 2 for handle loading and errors, 3 for handling time switching
+  - goal : only once render .map and chart when time switching
+   
+  ![Video 1st Form](./demo/performance/3rd.mp4)
+  
