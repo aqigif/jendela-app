@@ -1,9 +1,9 @@
 import React, { useMemo } from "react";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
-import { useCoinGeckoStore } from "@/stores";
-import { TIME_INTERVALS, useCoinGeckoStoreLoading, useCoinGeckoStoreTime } from "@/stores/gecko";
+import { useCoinGeckoStore, useCoinGeckoStoreLoading, useCoinGeckoStoreTime } from "@/stores";
 import { CandlestickChart } from "react-native-wagmi-charts";
+import { TIME_INTERVALS } from "@/constants/times";
 
 const CandlestickChartComponent = () => {
   const { isLoading, error } = useCoinGeckoStoreLoading((state) => ({

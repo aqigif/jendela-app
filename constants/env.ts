@@ -1,0 +1,1 @@
+export const COIN_GECKO_API = 'https://www.coingecko.com';

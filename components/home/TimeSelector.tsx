@@ -1,5 +1,6 @@
 import { ThemedText } from "@/components/ThemedText";
-import { TIME_INTERVALS, useCoinGeckoStoreTime } from "@/stores/gecko";
+import { TIME_INTERVALS } from "@/constants/times";
+import { useCoinGeckoStoreTime } from "@/stores";
 import React from "react";
 import {
   StyleSheet,

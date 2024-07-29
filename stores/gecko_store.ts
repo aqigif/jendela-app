@@ -1,14 +1,6 @@
-import { convertMarketCapsToTCandleData } from "@/utils/currency";
+import { CoinGecko } from "@/actions";
 import { TCandle } from "react-native-wagmi-charts";
 import { create } from "zustand";
-
-export const TIME_INTERVALS = {
-  "24_hours": "24H",
-  "7_days": "1W",
-  "30_days": "1M",
-  "365_days": "1Y",
-  max: "ALL",
-};
 
 type StoreState = {
   data: { [key: string]: TCandle[] };
@@ -25,14 +17,6 @@ type StoreLoadingState = {
   error: string | null;
 };
 
-const fetchCandleData = async (time: string): Promise<TCandle[]> => {
-  const response = await fetch(
-    `https://www.coingecko.com/ohlc/1/series/usd/${time}.json`
-  );
-  const data = await response.json();
-  return convertMarketCapsToTCandleData(data?.ohlc);
-};
-
 export const useCoinGeckoStore = create<StoreState>((set, get) => ({
   data: {},
   isLoading: false,
@@ -41,7 +25,7 @@ export const useCoinGeckoStore = create<StoreState>((set, get) => ({
     const { time } = useCoinGeckoStoreTime.getState();
     useCoinGeckoStoreLoading.setState({ isLoading: true, error: null });
     try {
-      const candleData = await fetchCandleData(time);
+      const candleData = await CoinGecko.fetchBtcOhlc(time);
       set((state) => ({
         data: { ...state.data, [time]: candleData },
       }));
@@ -70,4 +54,3 @@ export const useCoinGeckoStoreLoading = create<StoreLoadingState>(() => ({
   error: null,
 }));
 
-export default useCoinGeckoStore;
