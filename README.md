@@ -45,13 +45,15 @@ https://github.com/user-attachments/assets/6241563c-dd47-4bbd-b7d5-cb15483fbe76
    - define all charts of every time at once and using absolute position to manage hide and show
    
    https://github.com/user-attachments/assets/cecb2ff9-dc1f-4ba7-967e-aa4b61bbdbae
+   changelog : https://github.com/aqigif/jendela-app/compare/v1...v2
 
 
-4. 3rd form
+3. 3rd form
   - more separate component by making CandlestickChartAtom and CandlestickChartSuperAtom
   - more separate zustand store into 3: 1 for handle data, 2 for handle loading and errors, 3 for handling time switching
   - goal : only once render .map and chart when time switching
   - now when switching larger data that already in cache, it perform better
    
   https://github.com/user-attachments/assets/0459228c-f551-4b49-a63a-3aed3ccdd862
+  changelog : https://github.com/aqigif/jendela-app/compare/v2...v3
 
