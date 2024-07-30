@@ -30,6 +30,7 @@ You can start developing by editing the files inside the **app** directory. This
 https://github.com/user-attachments/assets/6241563c-dd47-4bbd-b7d5-cb15483fbe76
 
 ## Performance Analysis : React-Native-Wagmi-Chart
+issue : switching time when data already in cache become laggy
 
 1. 1st form
    - using react-query, with normal code
